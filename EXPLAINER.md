@@ -66,9 +66,20 @@ When an HR manager fills out the form on `predict.html` and clicks "Run Assessme
    * It loads `overtime_encoder.pkl` to translate "Yes"/"No" into "1"/"0".
    * It passes the formatted array to `trained_model.predict_proba()`.
 4. **The JSON Response:** Flask replies to the frontend with a lightweight JSON package containing the `probability` and the `threshold`.
-5. **Dynamic UI Updates:** `predict.js` receives the JSON, calculates the confidence score, identifies primary risk factors based on the initial inputs (e.g., flagging if they worked overtime or have low satisfaction), and dynamically un-hides the result card, populating it with colors (Red/Yellow/Green) based on the severity of the probability.
+5. **Dynamic UI Updates:** `predict.js` receives the JSON, calculates the confidence score, and dynamically un-hides the result card, populating it with colors (Red/Yellow/Green) based on the severity of the probability.
 
-### 4. Design Aesthetic & CSS Features
+### 4. Rule-Based Explanations (Risk Factors & HR Action)
+While the ML model provides the final probability score, the UI needs to be explainable to HR. The model itself doesn't output text, so we use a **Rule-Based Engine** inside `predict.js` to interpret the inputs and generate the "Primary Risk Factors" and "Suggested HR Action" dynamically:
+* **Primary Risk Factors:** JavaScript analyzes the exact data the user just typed into the form using simple thresholds derived from our exploratory data analysis. For example:
+  * If `OverTime === 'Yes'`, it pushes *"Frequent overtime requirements"* to the list.
+  * If `JobSatisfaction <= 2` or `WorkLifeBalance <= 2`, it flags them as low.
+  * If `YearsSinceLastPromotion >= 3` or `MonthlyIncome < 4000`, those are flagged.
+  This gives HR an immediate, human-readable reason for *why* the score might be high without needing to understand the underlying math.
+* **Suggested HR Action:** This is generated based on the final probability vs the threshold. 
+  * If `Probability >= Threshold`: It suggests scheduling a retention discussion and reviewing workload/compensation.
+  * If `Probability < Threshold`: It suggests maintaining regular check-ins to ensure continued engagement.
+
+### 5. Design Aesthetic & CSS Features
 The app was designed to look like a high-end, premium internal HR tool.
 * **CSS Variables (`:root`):** We mapped all primary colors, backgrounds, and shadows to CSS variables to maintain a consistent aesthetic across all pages.
 * **No Flashy Gimmicks:** We intentionally avoided neon colors, excessive animations, or glassmorphism to preserve professional realism.
