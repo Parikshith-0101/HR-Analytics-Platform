@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+
+{% block title %}HR Analytics - Home{% endblock %}
+
+{% block content %}
+<div class="hero-split">
+    <div class="hero-content">
+        <h1>Predict Employee Attrition Before It Happens</h1>
+        <p class="subtitle">Use workforce analytics and machine learning insights to identify employees at risk of leaving and proactively improve retention strategies.</p>
+        <a href="/prediction" class="btn btn-primary">Start Prediction</a>
+    </div>
+    <div class="hero-visual">
+        <svg width="400" height="300" viewBox="0 0 400 300" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect width="400" height="300" fill="#f8f9fa"/>
+            <!-- Dashboard Mockup SVG -->
+            <rect x="50" y="40" width="300" height="200" rx="8" fill="#ffffff" stroke="#eaedf1" stroke-width="2"/>
+            <rect x="70" y="60" width="120" height="12" rx="4" fill="#eaedf1"/>
+            <rect x="70" y="90" width="260" height="1" fill="#eaedf1"/>
+            
+            <!-- Bars -->
+            <rect x="70" y="110" width="20" height="80" rx="2" fill="#1565c0"/>
+            <rect x="110" y="140" width="20" height="50" rx="2" fill="#1565c0" opacity="0.6"/>
+            <rect x="150" y="80" width="20" height="110" rx="2" fill="#1565c0"/>
+            <rect x="190" y="120" width="20" height="70" rx="2" fill="#1565c0" opacity="0.6"/>
+            <rect x="230" y="150" width="20" height="40" rx="2" fill="#1565c0"/>
+            
+            <!-- Cards -->
+            <rect x="270" y="110" width="60" height="35" rx="4" fill="#e8f5e9" stroke="#c8e6c9" stroke-width="1"/>
+            <circle cx="285" cy="127" r="6" fill="#2e7d32"/>
+            <rect x="298" y="125" width="20" height="4" rx="2" fill="#2e7d32"/>
+            
+            <rect x="270" y="155" width="60" height="35" rx="4" fill="#ffebee" stroke="#ffcdd2" stroke-width="1"/>
+            <circle cx="285" cy="172" r="6" fill="#c62828"/>
+            <rect x="298" y="170" width="20" height="4" rx="2" fill="#c62828"/>
+            
+            <!-- Decorative dots -->
+            <circle cx="350" cy="30" r="16" fill="#e3f2fd"/>
+            <circle cx="50" cy="250" r="24" fill="#e3f2fd" opacity="0.5"/>
+        </svg>
+    </div>
+</div>
+
+<div class="value-grid">
+    <div class="value-card">
+        <div class="value-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+        </div>
+        <h3>Early Attrition Detection</h3>
+        <p class="small-text">Identify employees showing signs of attrition before resignation occurs, allowing for proactive intervention.</p>
+    </div>
+    
+    <div class="value-card">
+        <div class="value-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
+        </div>
+        <h3>Data-Driven HR Decisions</h3>
+        <p class="small-text">Support retention planning and compensation strategies using workforce analytics and predictive insights.</p>
+    </div>
+    
+    <div class="value-card">
+        <div class="value-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+        </div>
+        <h3>Workforce Stability</h3>
+        <p class="small-text">Improve long-term employee retention, reduce recruitment costs, and boost overall organizational performance.</p>
+    </div>
+</div>
+{% endblock %}

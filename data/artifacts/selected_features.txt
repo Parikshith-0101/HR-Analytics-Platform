@@ -1,0 +1,15 @@
+Age
+MonthlyIncome
+OverTime
+DistanceFromHome
+JobSatisfaction
+EnvironmentSatisfaction
+WorkLifeBalance
+StockOptionLevel
+YearsAtCompany
+YearsSinceLastPromotion
+YearsWithCurrManager
+TotalWorkingYears
+NumCompaniesWorked
+JobInvolvement
+PercentSalaryHike

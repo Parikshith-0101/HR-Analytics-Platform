@@ -1,0 +1,25 @@
+# Environments
+venv/
+env/
+.env
+
+# Python caches
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Jupyter Notebooks
+.ipynb_checkpoints/
+
+# Logs
+logs/
+*.log
+
+# Editor directories and files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Datasets (Uncomment if you want to ignore raw datasets)
+# data/raw/*.csv

@@ -1,0 +1,177 @@
+{% extends "base.html" %}
+
+{% block title %}HR Analytics - Dashboard{% endblock %}
+
+{% block content %}
+<div class="dashboard-header">
+    <h2>Workforce Analytics Dashboard</h2>
+    <p class="subtitle">Gain data-driven insights into employee retention factors and workforce risk segments.</p>
+</div>
+
+<div class="dashboard-grid">
+    
+    <!-- Key Insights Panel -->
+    <div class="dashboard-card full-width">
+        <h3>Key Attrition Insights</h3>
+        <p class="small-text mb-4">Crucial patterns identified by our machine learning model across the organization.</p>
+        <div class="insight-panel">
+            <ul class="insight-list">
+                <li><strong>Overtime Correlation:</strong> Employees with frequent overtime show significantly increased attrition probability compared to the baseline.</li>
+                <li><strong>Work-Life Balance:</strong> Low work-life balance strongly correlates with employee exits, particularly when combined with long commute times.</li>
+                <li><strong>Career Stagnation:</strong> Long promotion gaps (3+ years) are associated with higher resignation risk among mid-level employees.</li>
+                <li><strong>Compensation:</strong> Monthly income levels heavily influence retention, specifically when benchmarked against industry averages.</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Risk Segmentation -->
+    <div class="dashboard-card col-4">
+        <h3>Risk Segmentation</h3>
+        <p class="small-text mb-4">Current workforce distribution by attrition risk level.</p>
+        
+        <div class="segment-card">
+            <div class="segment-indicator high">12%</div>
+            <div class="segment-info flex-grow">
+                <strong>High Risk Employees</strong>
+                <p class="small-text">Requires immediate retention planning</p>
+                <div class="progress-bg"><div class="progress-bar high" style="width: 12%;"></div></div>
+            </div>
+        </div>
+        
+        <div class="segment-card">
+            <div class="segment-indicator mod">25%</div>
+            <div class="segment-info flex-grow">
+                <strong>Moderate Risk Employees</strong>
+                <p class="small-text">Monitor and improve engagement</p>
+                <div class="progress-bg"><div class="progress-bar mod" style="width: 25%;"></div></div>
+            </div>
+        </div>
+        
+        <div class="segment-card">
+            <div class="segment-indicator low">63%</div>
+            <div class="segment-info flex-grow">
+                <strong>Low Risk Employees</strong>
+                <p class="small-text">Stable and engaged workforce</p>
+                <div class="progress-bg"><div class="progress-bar low" style="width: 63%;"></div></div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Class Distribution -->
+    <div class="dashboard-card col-4">
+        <h3>Historical Attrition Rate</h3>
+        <p class="small-text mb-4">Baseline organizational retention metric.</p>
+        <div style="position: relative; height: 220px; width: 100%; display: flex; justify-content: center;">
+            <canvas id="classDistChart"></canvas>
+        </div>
+        <p class="small-text text-center mt-4" style="line-height: 1.5; padding: 0 16px;">
+            <strong>84%</strong> of employees remained with the organization while <strong>16%</strong> attrition was observed historically.
+        </p>
+    </div>
+    
+    <!-- Feature Importance -->
+    <div class="dashboard-card col-4">
+        <h3>Top Attrition Drivers</h3>
+        <p class="small-text mb-4">Top 5 factors influencing employee departures.</p>
+        <div style="position: relative; height: 260px; width: 100%;">
+            <canvas id="featureChart"></canvas>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Class Distribution Chart
+        const ctxDist = document.getElementById('classDistChart').getContext('2d');
+        new Chart(ctxDist, {
+            type: 'doughnut',
+            data: {
+                labels: ['Retained (84%)', 'Departed (16%)'],
+                datasets: [{
+                    data: [84, 16],
+                    backgroundColor: ['#e8f5e9', '#ffebee'],
+                    hoverBackgroundColor: ['#c8e6c9', '#ffcdd2'],
+                    borderColor: ['#2e7d32', '#c62828'],
+                    borderWidth: 1,
+                    cutout: '70%'
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: {
+                            font: {
+                                family: "'Inter', sans-serif",
+                                size: 12
+                            },
+                            usePointStyle: true,
+                            padding: 20
+                        }
+                    }
+                }
+            }
+        });
+        
+        // Feature Importance Chart
+        const ctxFeat = document.getElementById('featureChart').getContext('2d');
+        new Chart(ctxFeat, {
+            type: 'bar',
+            data: {
+                labels: ['Monthly Income', 'OverTime', 'Age', 'Total Working Years', 'Job Satisfaction'],
+                datasets: [{
+                    label: 'Relative Impact',
+                    data: [85, 78, 65, 55, 45],
+                    backgroundColor: 'rgba(21, 101, 192, 0.85)',
+                    hoverBackgroundColor: 'rgba(13, 71, 161, 1)',
+                    borderRadius: 4,
+                    barThickness: 24
+                }]
+            },
+            options: {
+                indexAxis: 'y',
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    tooltip: {
+                        backgroundColor: '#2c3e50',
+                        titleFont: { family: "'Inter', sans-serif", size: 13 },
+                        bodyFont: { family: "'Inter', sans-serif", size: 13 },
+                        padding: 12,
+                        cornerRadius: 8
+                    }
+                },
+                scales: {
+                    x: {
+                        beginAtZero: true,
+                        grid: {
+                            color: '#eaedf1',
+                            drawBorder: false
+                        },
+                        ticks: {
+                            font: { family: "'Inter', sans-serif" }
+                        }
+                    },
+                    y: {
+                        grid: {
+                            display: false,
+                            drawBorder: false
+                        },
+                        ticks: {
+                            font: { family: "'Inter', sans-serif", weight: '500' },
+                            color: '#546e7a'
+                        }
+                    }
+                }
+            }
+        });
+    });
+</script>
+{% endblock %}

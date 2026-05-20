@@ -1,0 +1,171 @@
+{% extends "base.html" %}
+
+{% block title %}HR Analytics - Prediction{% endblock %}
+
+{% block content %}
+<div class="prediction-container">
+    <div class="form-section">
+        <div class="form-card">
+            <h2>Evaluate Attrition Risk</h2>
+            <p class="subtitle">Enter employee profile data to assess their current retention probability.</p>
+            
+            <form id="predictionForm" class="grid-form">
+                <!-- Demographic & General -->
+                <div class="form-group">
+                    <label for="Age">Age</label>
+                    <input type="number" id="Age" name="Age" min="18" max="100" value="35" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="DistanceFromHome">Distance From Home (miles)</label>
+                    <input type="number" id="DistanceFromHome" name="DistanceFromHome" min="0" value="10" required>
+                </div>
+                
+                <!-- Financial -->
+                <div class="form-group">
+                    <label for="MonthlyIncome">Monthly Income ($)</label>
+                    <input type="number" id="MonthlyIncome" name="MonthlyIncome" min="0" value="5000" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="PercentSalaryHike">Percent Salary Hike (%)</label>
+                    <input type="number" id="PercentSalaryHike" name="PercentSalaryHike" min="0" value="12" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="StockOptionLevel">Stock Option Level (0-3)</label>
+                    <input type="number" id="StockOptionLevel" name="StockOptionLevel" min="0" max="3" value="1" required>
+                </div>
+                
+                <!-- Work History -->
+                <div class="form-group">
+                    <label for="TotalWorkingYears">Total Working Years</label>
+                    <input type="number" id="TotalWorkingYears" name="TotalWorkingYears" min="0" value="10" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="NumCompaniesWorked">Num Companies Worked</label>
+                    <input type="number" id="NumCompaniesWorked" name="NumCompaniesWorked" min="0" value="2" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="YearsAtCompany">Years At Company</label>
+                    <input type="number" id="YearsAtCompany" name="YearsAtCompany" min="0" value="5" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="YearsSinceLastPromotion">Years Since Last Promotion</label>
+                    <input type="number" id="YearsSinceLastPromotion" name="YearsSinceLastPromotion" min="0" value="1" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="YearsWithCurrManager">Years With Current Manager</label>
+                    <input type="number" id="YearsWithCurrManager" name="YearsWithCurrManager" min="0" value="3" required>
+                </div>
+                
+                <!-- Role Details & Satisfaction -->
+                <div class="form-group">
+                    <label for="OverTime">OverTime Requirement</label>
+                    <select id="OverTime" name="OverTime">
+                        <option value="No">No</option>
+                        <option value="Yes">Yes</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="JobSatisfaction">Job Satisfaction</label>
+                    <select id="JobSatisfaction" name="JobSatisfaction" required>
+                        <option value="1">Very Low</option>
+                        <option value="2">Low</option>
+                        <option value="3" selected>High</option>
+                        <option value="4">Very High</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="EnvironmentSatisfaction">Environment Satisfaction</label>
+                    <select id="EnvironmentSatisfaction" name="EnvironmentSatisfaction" required>
+                        <option value="1">Very Low</option>
+                        <option value="2">Low</option>
+                        <option value="3" selected>High</option>
+                        <option value="4">Very High</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="WorkLifeBalance">Work-Life Balance</label>
+                    <select id="WorkLifeBalance" name="WorkLifeBalance" required>
+                        <option value="1">Very Low</option>
+                        <option value="2">Low</option>
+                        <option value="3" selected>High</option>
+                        <option value="4">Very High</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="JobInvolvement">Job Involvement</label>
+                    <select id="JobInvolvement" name="JobInvolvement" required>
+                        <option value="1">Very Low</option>
+                        <option value="2">Low</option>
+                        <option value="3" selected>High</option>
+                        <option value="4">Very High</option>
+                    </select>
+                </div>
+                
+                <div class="form-actions">
+                    <button type="button" class="btn btn-secondary" onclick="document.getElementById('predictionForm').reset()">Reset Data</button>
+                    <button type="submit" class="btn btn-primary" id="predictBtn">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 8px;"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+                        Run Assessment
+                    </button>
+                </div>
+            </form>
+        </div>
+        
+        <div class="result-card hidden mt-4" id="resultCard">
+            <h3>Assessment Result</h3>
+            
+            <div id="resultStatus" class="result-status"></div>
+            
+            <div class="result-metrics">
+                <div class="metric-box">
+                    <div class="metric-val" id="riskProb">--</div>
+                    <div class="metric-lbl">Risk Probability</div>
+                </div>
+                <div class="metric-box">
+                    <div class="metric-val" id="confidenceLvl">--</div>
+                    <div class="metric-lbl">Confidence Score</div>
+                </div>
+            </div>
+            
+            <h4>Primary Risk Factors</h4>
+            <div class="factors-list" id="factorsList">
+                <!-- Populated by JS -->
+            </div>
+            
+            <h4>Suggested HR Action</h4>
+            <div class="action-box" id="hrAction">
+                <!-- Populated by JS -->
+            </div>
+        </div>
+    </div>
+    
+    <div class="sidebar">
+        <div class="info-card">
+            <h3>How Risk Is Evaluated</h3>
+            <p class="small-text mt-4">The prediction model analyzes multiple employee data points to assess retention likelihood.</p>
+            
+            <ul class="insight-list">
+                <li><strong>Satisfaction Metrics</strong><br><span class="small-text">Evaluates job, environment, and work-life balance scores.</span></li>
+                <li><strong>Compensation Data</strong><br><span class="small-text">Analyzes salary level, recent hikes, and stock options.</span></li>
+                <li><strong>Career Progression</strong><br><span class="small-text">Reviews time since last promotion and manager tenure.</span></li>
+                <li><strong>Workload Patterns</strong><br><span class="small-text">Factors in overtime requirements and job involvement.</span></li>
+            </ul>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/predict.js') }}"></script>
+{% endblock %}
