@@ -1,269 +1,155 @@
-# Employee Attrition Prediction Model - Quick Start Guide
+# Employee Attrition Analytics Platform
 
-## 🎯 Project Overview
+[![Python Version](https://img.shields.io/badge/python-3.10%2B-blue.svg)](https://www.python.org/)
+[![Flask Framework](https://img.shields.io/badge/framework-Flask-lightgrey.svg)](https://flask.palletsprojects.com/)
+[![Scikit-Learn](https://img.shields.io/badge/ML-scikit--learn-orange.svg)](https://scikit-learn.org/)
+[![License](https://img.shields.io/badge/license-MIT-green.svg)](#)
 
-This project builds a machine learning model to predict employee attrition (turnover) using HR data. It includes complete pipeline from data preprocessing through model evaluation to production predictions.
+A professional, data-driven HR analytics platform that predicts employee voluntary attrition (turnover) risks and visualizes workforce demographics. Powered by a tuned, L1-regularized **Logistic Regression** model and wrapped in a responsive **Flask** full-stack web application.
+
+---
+
+## 🎯 Platform Features
+
+* **Real-Time Flight Risk Assessment:** Interactively enter employee metrics to calculate an attrition probability score.
+* **Prescriptive HR Interventions:** Dynamically yields specific "Primary Risk Factors" (e.g., overtime load, commute distance, low satisfaction) and tailored retention recommendations.
+* **Macro Departmental Dashboards:** Responsive analytics dashboard utilizing **Chart.js** to summarize baseline turnover distributions, risk segments, and organizational drivers.
+* **Calibrated Decision Boundary ($\theta = 0.65$):** Threshold optimized specifically under a strict Precision constraint ($\ge 35\%$) to maximize retention budget efficiency and eliminate "alarm fatigue."
 
 ---
 
 ## 🚀 Quick Start
 
-### 1️⃣ Run Complete Pipeline (Sequential)
+### 1️⃣ Run the Web Application
+
+Launch the Flask web server to access the HR platform locally:
 
 ```bash
-# Step 1: Preprocessing
-python preprocessing.py
+# Install dependencies
+pip install -r requirements.txt
 
-# Step 2: Model Selection
-python model_selection.py
-
-# Step 3: Model Tuning
-python model_training_and_tuning.py
-
-# Step 4: Threshold Optimization
-python threshold_optimization.py
-
-# Step 5: Final Evaluation
-python final_evaluation.py
+# Start the Flask web server
+python app.py
 ```
 
-### 2️⃣ Make Predictions on New Employees
+Open your browser and navigate to **`http://127.0.0.1:5000`** to access the Landing Page, Interactive Assessment Form, and Analytics Dashboard.
+
+### 2️⃣ Run the Offline Machine Learning Pipeline
+
+If you wish to retrain, tune, or evaluate the predictive models, the pipeline is modularly organized inside `ml_pipeline/`:
 
 ```bash
-python prediction_pipeline.py
+# Step 1: Preprocess the data and extract scaling weights
+python ml_pipeline/preprocessing.py
+
+# Step 2: Compare baseline models (Logistic Regression, Random Forest, AdaBoost)
+python ml_pipeline/model_selection.py
+
+# Step 3: Run SMOTE balancing and GridSearchCV hyperparameter tuning
+python ml_pipeline/train_model.py
+
+# Step 4: Calibrate the classification threshold to optimize F1 & Precision
+python ml_pipeline/threshold_optimization.py
+
+# Step 5: Generate performance charts, confusion matrices, and audit reports
+python ml_pipeline/final_evaluation.py
 ```
-
-Choose from:
-- **Option 1**: Batch predictions from CSV file
-- **Option 2**: Manual entry for single employee
-- **Option 3**: Demo with sample employees
-
----
-
-## 📊 Output & Results
-
-### Evaluation Results
-- **Accuracy**: ~84-86%
-- **Precision**: ~72% (high quality positive predictions)
-- **Recall**: ~68-70% (identifies most attrition cases)
-- **ROC-AUC**: ~0.89 (excellent discrimination)
-
-### Generated Files
-
-| File | Description |
-|------|-------------|
-| `results/final_evaluation_metrics.png` | 6-panel performance dashboard |
-| `results/final_evaluation_report.txt` | Detailed evaluation report |
-| `results/test_predictions_detailed.csv` | All test predictions with probabilities |
-| `results/predictions_*.csv` | Production predictions from pipeline |
 
 ---
 
 ## 📁 Project Structure
 
+The codebase is organized according to clean separation of concerns and best-practice MLOps layouts:
+
 ```
-├── datasets/                      # Raw data
-├── processed_data/               # Preprocessed datasets
-├── models/                       # Trained ML models
-├── preprocessing_artifacts/      # Encoders & scalers
-├── results/                      # Metrics & predictions
-├── visualizations/               # Plots & charts
+├── data/
+│   ├── raw/                  # Raw IBM Watson HR CSV files
+│   ├── processed/            # Scaled, split, and preprocessed datasets
+│   └── artifacts/            # Selected features metadata
 │
-├── preprocessing.py              # Data prep
-├── model_selection.py            # Model comparison
-├── model_training_and_tuning.py # Hyperparameter tuning
-├── threshold_optimization.py     # Threshold selection
-├── final_evaluation.py           # Test set evaluation ⭐
-├── prediction_pipeline.py        # Production predictions ⭐
+├── ml_pipeline/              # Core machine learning pipeline scripts
+│   ├── preprocessing.py      # Cleansing, label encoding, and standard scaling
+│   ├── train_model.py        # GridSearchCV tuning and model serialization
+│   ├── threshold_opt.py      # Custom decision boundary selection
+│   └── final_evaluation.py   # Performance plots and audit report generator
 │
-├── PROJECT_STRUCTURE.md          # Detailed structure docs
-└── EVALUATION_PREDICTION_GUIDE.md # Complete guide
-```
-
-**⭐ = Production-ready scripts**
-
----
-
-## 🔧 Requirements
-
-```
-pandas
-numpy
-scikit-learn
-imbalanced-learn
-joblib
-matplotlib
-seaborn
-flask (optional, for API)
-```
-
-Install with:
-```bash
-pip install -r requirements.txt
+├── models/                   # Serialized binaries (Pickles) & calibrated threshold
+│   ├── trained_model.pkl     # Tuned Logistic Regression model
+│   ├── scaler.pkl            # Pre-fit StandardScaler object
+│   ├── overtime_encoder.pkl  # Label encoder for overtime
+│   └── threshold.txt         # Plaintext optimal threshold (0.65)
+│
+├── results/                  # Quality control output metrics and diagnostics
+│   ├── metrics/              # CSV threshold sweeps and parameter logs
+│   └── plots/                # High-resolution performance charts (ROC/PR curves)
+│
+├── static/                   # Web assets (styles.css, fetch scripts, animations)
+├── templates/                # Jinja2 layouts (base.html, index.html, predict.html)
+│
+├── app.py                    # Flask server entrypoint exposing predictive endpoints
+└── requirements.txt          # Python library specifications
 ```
 
 ---
 
-## 📋 Input Features for Prediction
+## 📊 Model Performance ($\theta = 0.65$)
 
-Your CSV should have these 15 columns (in any order):
+Tested on a stratified test partition ($N=294$) with the following results:
+
+| Metric | Score | Performance Details |
+| :--- | :---: | :--- |
+| **Accuracy** | **83.67%** | Correctness of all predictions on real un-sampled dataset |
+| **Precision** | **48.94%** | Accuracy of flagged risks (1 in 2 flagged employees is a true flight risk) |
+| **Recall** | **48.94%** | Coverage (captures nearly half of all actual exits inside the firm) |
+| **F1-Score** | **0.4894** | Harmonic mean optimizing the precision-recall boundary |
+| **ROC-AUC** | **75.48%** | Discrimination ability to rank positive cases higher than negative cases |
+
+### 🎯 Test Confusion Matrix
 
 ```
-Age                          (integer: years old)
-MonthlyIncome               (integer: salary)
-OverTime                    (string: "Yes" or "No")
-DistanceFromHome            (integer: km)
-JobSatisfaction             (integer: 1-4)
-EnvironmentSatisfaction     (integer: 1-4)
-WorkLifeBalance             (integer: 1-4)
-StockOptionLevel            (integer: 0-3)
-YearsAtCompany              (integer: years)
-YearsSinceLastPromotion     (integer: years)
-YearsWithCurrManager        (integer: years)
-TotalWorkingYears           (integer: years)
-NumCompaniesWorked          (integer: count)
-JobInvolvement              (integer: 1-4)
-PercentSalaryHike           (integer: percentage)
-```
-
----
-
-## 💡 Usage Examples
-
-### Example 1: Batch Prediction
-
-```bash
-python prediction_pipeline.py
-# Choose option 1
-# Input: employees.csv
-# Output: predictions_20260520_143045.csv
-```
-
-### Example 2: Single Employee
-
-```bash
-python prediction_pipeline.py
-# Choose option 2
-# Enter data interactively
-# View probability and risk level
-```
-
-### Example 3: Python Integration
-
-```python
-import pandas as pd
-from prediction_pipeline import predict_attrition
-
-# Load data
-df = pd.read_csv('new_employees.csv')
-
-# Get predictions
-results = predict_attrition(df)
-
-# Filter high-risk employees
-high_risk = results[results['Risk_Level'] == 'High Risk']
-print(f"Intervention needed for {len(high_risk)} employees")
+                      Predicted Stay (0)   Predicted Leave (1)
+                     +--------------------+--------------------+
+   Actual Stay (0)   |      223 (TN)      |       24 (FP)      |
+                     |  Correctly Stayed  |   False Alarm      |
+                     +--------------------+--------------------+
+   Actual Leave (1)  |       24 (FN)      |       23 (TP)      |
+                     |   Missed Risk      |  Correctly Left    |
+                     +--------------------+--------------------+
 ```
 
 ---
 
-## 🎯 Model Performance
+## 💡 Prediction Form Input Specification
 
-### Metrics
-- **Accuracy**: Correctness of all predictions
-- **Precision**: Quality of positive predictions (how many predicted attrition are correct)
-- **Recall**: Coverage (what % of actual attrition cases are identified)
-- **F1 Score**: Balance between precision and recall
-- **ROC-AUC**: Overall discrimination ability
+The platform accepts evaluations based on **15 key HR attributes**:
 
-### Risk Levels
-- 🟢 **Low Risk** (Prob < 0.33): Unlikely to leave
-- 🟡 **Medium Risk** (Prob 0.33-0.67): Uncertain
-- 🔴 **High Risk** (Prob > 0.67): Likely to leave
-
-### Recommendations
-- **Monitor**: For predicted non-attrition employees
-- **Intervene**: For predicted attrition employees
-
----
-
-## 🔍 Detailed Documentation
-
-For complete information, see:
-
-- **[PROJECT_STRUCTURE.md](PROJECT_STRUCTURE.md)** - Full folder organization and file descriptions
-- **[EVALUATION_PREDICTION_GUIDE.md](EVALUATION_PREDICTION_GUIDE.md)** - Comprehensive guide for final evaluation and prediction scripts
+1. **Age:** (18-60)
+2. **MonthlyIncome:** ($1,000 - $20,000)
+3. **OverTime:** ("Yes" / "No")
+4. **DistanceFromHome:** (1 - 29 miles)
+5. **JobSatisfaction:** (1-4: Low, Medium, High, Very High)
+6. **EnvironmentSatisfaction:** (1-4: Low, Medium, High, Very High)
+7. **WorkLifeBalance:** (1-4: Bad, Average, Good, Excellent)
+8. **StockOptionLevel:** (0-3)
+9. **YearsAtCompany:** (0 - 40 years)
+10. **YearsSinceLastPromotion:** (0 - 15 years)
+11. **YearsWithCurrManager:** (0 - 17 years)
+12. **TotalWorkingYears:** (0 - 40 years)
+13. **NumCompaniesWorked:** (0 - 9)
+14. **JobInvolvement:** (1-4: Low, Medium, High, Very High)
+15. **PercentSalaryHike:** (11% - 25%)
 
 ---
 
-## ✅ Checklist Before Deployment
+## 📖 In-Depth Project Documentation
 
-- [ ] All preprocessing scripts have been run successfully
-- [ ] `final_evaluation.py` shows acceptable metrics
-- [ ] All files in `models/` and `preprocessing_artifacts/` exist
-- [ ] Test CSV predictions work correctly
-- [ ] Review `final_evaluation_report.txt` for any warnings
-
----
-
-## 🆘 Troubleshooting
-
-### Model files not found
-```bash
-# Ensure all scripts have been run in order:
-python preprocessing.py
-python model_selection.py
-python model_training_and_tuning.py
-python threshold_optimization.py
-```
-
-### CSV encoding errors
-```bash
-# Use UTF-8 encoding when saving CSV:
-df.to_csv('file.csv', index=False, encoding='utf-8')
-```
-
-### Missing features error
-```bash
-# Check your CSV has exactly these 15 columns with correct names
-# Use: df.columns to verify
-```
-
-### OverTime encoding error
-```bash
-# Must be "Yes" or "No" (case-sensitive, not "yes"/"no" or 1/0)
-```
+For deeper academic and implementation explanations:
+* **[ML_PROJECT_REPORT.md](ML_PROJECT_REPORT.md):** 8-Chapter comprehensive project documentation focusing on data science, SMOTE oversampling, GridSearchCV tuning, and threshold calibration.
+* **[WEB_TECH_PROJECT_REPORT.md](WEB_TECH_PROJECT_REPORT.md):** 8-Chapter project documentation focusing on full-stack web architectures, Flask API routes, CSS3 responsive grid frameworks, asynchronous Fetch cycles, and Chart.js integrations.
+* **[EXPLAINER.md](EXPLAINER.md):** A localized, intuitive ground-up guide explaining the platform's math, business rules, and design choices.
 
 ---
 
-## 📞 Project Info
-
-- **Model Type**: Logistic Regression (Tuned)
-- **Decision Threshold**: ~0.47 (optimized for F1 Score)
-- **Test Set Size**: ~293 employees
-- **Training Set Size**: ~735 employees (after train-test split)
-- **Features**: 15 selected HR metrics
-- **Target**: Employee Attrition (0=Stay, 1=Leave)
-
----
-
-## 📈 Next Steps
-
-1. **Review Evaluation**: Run `final_evaluation.py` and review reports
-2. **Test Predictions**: Use `prediction_pipeline.py` with demo or sample data
-3. **Deploy**: Integrate into HR systems or API
-4. **Monitor**: Track predictions vs actual outcomes for model maintenance
-
----
-
-## 📝 Notes
-
-- Model uses data from [WA_Fn-UseC_-HR-Employee-Attrition.csv](datasets/WA_Fn-UseC_-HR-Employee-Attrition.csv)
-- Optimal decision threshold balances precision and recall
-- All preprocessing artifacts must be preserved for production use
-- Regularly retrain if data distribution changes significantly
-
----
-
-**Last Updated**: May 20, 2026  
-**Status**: ✅ Production Ready
+**Status:** ✅ Production-Ready  
+**Contact:** Human Resources Analytics Platform Team  
+**Last Updated:** May 20, 2026
