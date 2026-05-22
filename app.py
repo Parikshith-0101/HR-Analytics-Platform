@@ -55,7 +55,8 @@ def predict():
             df['OverTime'] = overtime_encoder.transform(df['OverTime'])
             
         # Scaling
-        X_scaled = scaler.transform(df)
+        X_scaled_array = scaler.transform(df)
+        X_scaled = pd.DataFrame(X_scaled_array, columns=selected_features)
         
         # Predict probability
         prob = model.predict_proba(X_scaled)[0, 1]
